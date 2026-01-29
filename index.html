@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savyo - Công cụ hỗ trợ mua sắm thông minh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --gradient-secondary: linear-gradient(135deg, #ec4899, #a855f7);
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.2);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --border-radius: 16px;
+            --border-radius-lg: 24px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(236, 72, 153, 0.05) 0%, transparent 20%);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            padding: 15px 0;
+            transition: var(--transition);
+        }
+        
+        header.scrolled {
+            padding: 10px 0;
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            margin-right: 8px;
+            font-size: 2rem;
+        }
+        
+        .logo span {
+            color: var(--dark);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        nav ul li a:hover, 
+        nav ul li a.active {
+            color: var(--primary);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: var(--transition);
+        }
+        
+        nav ul li a:hover::after,
+        nav ul li a.active::after {
+            width: 100%;
+        }
+        
+        .cta-button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-secondary);
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        .cta-button:hover::before {
+            left: 0;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+        }
+        
+        .hero-text {
+            flex: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 70%;
+            height: 8px;
+            background: var(--gradient-secondary);
+            border-radius: 4px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #475569;
+            margin-bottom: 35px;
+            max-width: 600px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .secondary-button {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .secondary-button:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            border: 12px solid #1e293b;
+            transform: rotate(5deg);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f0f4ff, #e6e9ff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-interface {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .app-balance {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: var(--shadow-sm);
+            width: 100%;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .app-balance-title {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        
+        .app-balance-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .app-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        
+        .app-transactions {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: var(--shadow-sm);
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .transaction {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .transaction:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .transaction-info {
+            flex-grow: 1;
+        }
+        
+        .transaction-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            color: var(--success);
+        }
+        
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20%;
+            height: 4px;
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        
+        .phone-mockup::after {
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12%;
+            height: 12px;
+            background: #f87171;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.7);
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .floating-1 {
+            width: 150px;
+            height: 150px;
+            top: -50px;
+            right: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-2 {
+            width: 100px;
+            height: 100px;
+            bottom: -30px;
+            left: 5%;
+            animation-delay: 2s;
+        }
+        
+        .floating-3 {
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            right: 5%;
+            animation-delay: 4s;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: white;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 6px;
+            background: var(--gradient-secondary);
+            border-radius: 3px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #475569;
+            max-width: 700px;
+            margin: 30px auto 70px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0;
+            z-index: -1;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 0.08;
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 1.8rem;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .feature-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-description {
+            color: #475569;
+            font-size: 1.05rem;
+        }
+        
+        /* Benefits Section */
+        .benefits {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f0f4ff, #e6e9ff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .benefits-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 50px;
+        }
+        
+        .benefit-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 40px 35px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            transition: var(--transition);
+        }
+        
+        .benefit-card:hover::before {
+            transform: scale(1.1);
+        }
+        
+        .benefit-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            background: var(--gradient-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .benefit-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .benefit-description {
+            color: #475569;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .benefit-highlight {
+            display: block;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 8px;
+            font-size: 1.3rem;
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: 100px 0;
+            background: white;
+            position: relative;
+        }
+        
+        .steps-container {
+            max-width: 900px;
+            margin: 60px auto 0;
+            position: relative;
+        }
+        
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: calc(100% - 60px);
+            background: var(--gradient-primary);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .step:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        
+        .step:nth-child(1) { animation-delay: 0.2s; }
+        .step:nth-child(2) { animation-delay: 0.4s; }
+        .step:nth-child(3) { animation-delay: 0.6s; }
+        .step:nth-child(4) { animation-delay: 0.8s; }
+        
+        .step-icon {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin: 0 20px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .step-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            flex: 1;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+        }
+        
+        .step:hover .step-content {
+            transform: translateX(5px);
+        }
+        
+        .step:nth-child(odd) .step-content {
+            text-align: right;
+        }
+        
+        .step-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .step-description {
+            color: #475569;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: var(--gradient-primary);
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 30%),
+                        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 30%);
+            z-index: 1;
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .cta-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .cta-primary {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-secondary);
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        .cta-primary:hover::after {
+            left: 0;
+        }
+        
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.85);
+            padding: 70px 0 30px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: block;
+            padding: 5px 0;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .footer-about p {
+            margin-top: 15px;
+            line-height: 1.7;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .phone-mockup {
+                width: 260px;
+                height: 520px;
+                transform: rotate(3deg);
+            }
+            
+            .steps-container::before {
+                left: 30px;
+            }
+            
+            .step {
+                flex-direction: column !important;
+                text-align: center;
+            }
+            
+            .step-content {
+                text-align: center !important;
+                margin-top: 20px;
+            }
+            
+            .step:nth-child(odd) .step-content {
+                text-align: center !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 20px 0;
+                box-shadow: var(--shadow-md);
+                z-index: 100;
+            }
+            
+            nav ul.show {
+                display: flex;
+            }
+            
+            nav ul li {
+                margin: 0;
+                text-align: center;
+                padding: 10px 0;
+            }
+            
+            nav ul li a {
+                display: block;
+                padding: 10px 0;
+            }
+            
+            .hero {
+                padding: 160px 0 80px;
+                text-align: center;
+            }
+            
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .hero-title {
+                font-size: 2.7rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.15rem;
+                margin: 0 auto 30px;
+            }
+            
+            .phone-mockup {
+                width: 240px;
+                height: 480px;
+                transform: rotate(0);
+                margin-top: 30px;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .section-subtitle {
+                font-size: 1.15rem;
+            }
+            
+            .cta-title {
+                font-size: 2.3rem;
+            }
+            
+            .cta-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-primary, .cta-secondary {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.05rem;
+            }
+            
+            .phone-mockup {
+                width: 200px;
+                height: 400px;
+            }
+            
+            .feature-card, .benefit-card {
+                padding: 25px 20px;
+            }
+            
+            .feature-icon, .benefit-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .feature-title, .benefit-title {
+                font-size: 1.4rem;
+            }
+            
+            .section-title {
+                font-size: 1.9rem;
+            }
+            
+            .step-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .step-content {
+                padding: 20px;
+            }
+            
+            .step-title {
+                font-size: 1.4rem;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+            
+            .cta-primary, .cta-secondary {
+                padding: 14px 30px;
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Link styles for CTA buttons */
+        a.cta-button, a.cta-primary, a.secondary-button {
+            text-decoration: none;
+            color: inherit;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-shopping-bag logo-icon"></i>
+                SAV<span>YO</span>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="#features" class="active">Tính năng</a></li>
+                    <li><a href="#benefits">Lợi ích</a></li>
+                    <li><a href="#how-it-works">Cách sử dụng</a></li>
+                    <li><a href="#download">Tải ứng dụng</a></li>
+                </ul>
+            </nav>
+            <a href="https://www.savyo.site" target="_blank" class="cta-button">Dùng thử ngay</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Mua sắm thông minh 3 trong 1: Giải trí - Mua sắm - Quản lý tài chính</h1>
+                <p class="hero-subtitle">Savyo là hệ sinh thái tài chính cá nhân tích hợp sâu vào hành trình mua sắm của bạn, giúp tiết kiệm 5-15% chi phí sinh hoạt hàng tháng với công nghệ định danh một chạm và AI thông minh.</p>
+                <div class="hero-buttons">
+                    <a href="https://www.savyo.site" target="_blank" class="cta-button pulse">Bắt đầu miễn phí</a>
+                    <a href="#how-it-works" class="secondary-button">Xem hướng dẫn</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="app-interface">
+                            <div class="app-header">
+                                <div style="font-weight: 700; font-size: 1.3rem;">Savyo</div>
+                                <div style="background: #e2e8f0; width: 40px; height: 24px; border-radius: 12px;"></div>
+                            </div>
+                            <div class="app-balance">
+                                <div class="app-balance-title">Số dư khả dụng</div>
+                                <div class="app-balance-amount">1,250,000đ</div>
+                            </div>
+                            <div class="app-stats">
+                                <div class="stat-card">
+                                    <div class="stat-value">87%</div>
+                                    <div class="stat-label">Tiết kiệm</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">12</div>
+                                    <div class="stat-label">Giao dịch</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">450K</div>
+                                    <div class="stat-label">Hoàn tiền</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">3</div>
+                                    <div class="stat-label">Voucher</div>
+                                </div>
+                            </div>
+                            <div class="app-transactions">
+                                <div class="transaction">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-shopping-bag"></i>
+                                    </div>
+                                    <div class="transaction-info">
+                                        <div class="transaction-name">Shopee</div>
+                                        <div class="transaction-amount">+45,000đ</div>
+                                    </div>
+                                </div>
+                                <div class="transaction">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <div class="transaction-info">
+                                        <div class="transaction-name">Highlands Coffee</div>
+                                        <div class="transaction-amount">+18,000đ</div>
+                                    </div>
+                                </div>
+                                <div class="transaction">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <div class="transaction-info">
+                                        <div class="transaction-name">CGV Cinema</div>
+                                        <div class="transaction-amount">+32,000đ</div>
+                                    </div>
+                                </div>
+                                <div class="transaction">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="transaction-info">
+                                        <div class="transaction-name">TikTok Shop</div>
+                                        <div class="transaction-amount">+65,000đ</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="floating-element floating-3"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Tính năng nổi bật</h2>
+            <p class="section-subtitle">Savyo mang đến trải nghiệm mua sắm thông minh với những tính năng đột phá, giúp bạn tiết kiệm thời gian và tiền bạc</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Định danh một chạm</h3>
+                    <p class="feature-description">Chuyển đổi link mua sắm sang link tiếp thị liên kết chỉ với một thao tác chạm, không cần sao chép - dán thủ công như các ứng dụng khác.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">AI quản lý chi tiêu</h3>
+                    <p class="feature-description">Trí tuệ nhân tạo tự động phân tích dữ liệu đơn hàng, phân loại chi tiêu và đưa ra cảnh báo tài chính thông minh, giúp bạn hình thành thói quen quản lý tài chính chủ động.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3 class="feature-title">Hệ thống hoàn tiền & đổi quà</h3>
+                    <p class="feature-description">Tích điểm linh hoạt và đổi sang tiền mặt hoặc voucher từ các đối tác chiến lược như Highlands, KFC, CGV... giúp tối đa hóa lợi ích kinh tế.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="feature-title">Cộng đồng săn sale</h3>
+                    <p class="feature-description">Kết nối và chia sẻ với cộng đồng người dùng cùng sở thích, trao đổi deal hời và kinh nghiệm mua sắm thông minh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="benefits">
+        <div class="container benefits-container">
+            <h2 class="section-title">Lợi ích khi sử dụng Savyo</h2>
+            <p class="section-subtitle">Savyo không chỉ giúp bạn tiết kiệm tiền mà còn xây dựng thói quen tài chính lành mạnh</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <h3 class="benefit-title">Tiết kiệm chi phí</h3>
+                    <p class="benefit-description">Giúp học sinh, sinh viên tiết kiệm <span class="benefit-highlight">5-15% chi phí sinh hoạt</span> hàng tháng thông qua hoàn tiền và voucher đa dạng từ các đối tác.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="benefit-title">Quản lý thông minh</h3>
+                    <p class="benefit-description">Tự động đồng bộ dữ liệu từ đơn hàng mua sắm vào sổ chi tiêu cá nhân, <span class="benefit-highlight">không cần ghi chép thủ công</span>, giúp việc quản lý tiền bạc trở nên dễ dàng tuyệt đối.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="benefit-title">Mua sắm có trách nhiệm</h3>
+                    <p class="benefit-description">AI cảnh báo và ngăn chặn mua sắm bốc đồng với các món hàng giá trị lớn, <span class="benefit-highlight">bảo vệ ví tiền</span> của bạn khỏi những quyết định chi tiêu thiếu suy nghĩ.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Cách sử dụng Savyo</h2>
+            <p class="section-subtitle">Quy trình đơn giản chỉ với vài thao tác, bạn đã có thể bắt đầu mua sắm thông minh và tiết kiệm tiền</p>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-icon">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Chia sẻ link sản phẩm</h3>
+                        <p class="step-description">Khi tìm thấy sản phẩm yêu thích trên các sàn TMĐT như Shopee, TikTok Shop, Lazada..., hãy nhấn nút chia sẻ và chọn biểu tượng Savyo trong menu chia sẻ.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Mua hàng như bình thường</h3>
+                        <p class="step-description">Savyo tự động chuyển đổi link sang link tiếp thị liên kết và đưa bạn trở lại sàn thương mại điện tử để hoàn tất mua hàng như bình thường.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Nhận hoàn tiền tự động</h3>
+                        <p class="step-description">Sau khi đơn hàng được xác nhận, tiền hoàn sẽ tự động được ghi nhận vào ví Savyo của bạn. Hệ thống cũng đồng bộ dữ liệu chi tiêu vào sổ quản lý tài chính.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Quản lý & đổi thưởng</h3>
+                        <p class="step-description">Theo dõi chi tiêu thông minh qua biểu đồ trực quan, nhận cảnh báo từ AI khi chi tiêu vượt mức. Đổi điểm tích lũy thành tiền mặt hoặc voucher từ các đối tác.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="download">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Sẵn sàng mua sắm thông minh hơn?</h2>
+                <p class="cta-subtitle">Tham gia cùng hàng nghìn bạn trẻ Gen Z đã tiết kiệm hàng triệu đồng mỗi tháng với Savyo</p>
+                <div class="cta-buttons">
+                    <a href="https://www.savyo.site" target="_blank" class="cta-primary">Dùng thử phiên bản Web</a>
+                    <a href="#how-it-works" class="cta-secondary">Đăng ký nhận App Mobile</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column footer-about">
+                    <h3>Savyo</h3>
+                    <p>Công cụ hỗ trợ mua sắm thông minh tích hợp quản lý tài chính cá nhân, giúp thế hệ trẻ mua sắm tiết kiệm và có trách nhiệm.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Tính năng</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Định danh một chạm</a></li>
+                        <li><a href="#">Quản lý chi tiêu AI</a></li>
+                        <li><a href="#">Hệ thống hoàn tiền</a></li>
+                        <li><a href="#">Đổi voucher đối tác</a></li>
+                        <li><a href="#">Cộng đồng săn sale</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Liên kết</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Trang chủ</a></li>
+                        <li><a href="#features">Tính năng</a></li>
+                        <li><a href="#benefits">Lợi ích</a></li>
+                        <li><a href="#how-it-works">Hướng dẫn sử dụng</a></li>
+                        <li><a href="#download">Tải ứng dụng</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Liên hệ</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> thiendung1092008@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> 0792144904</li>
+                        <li><i class="fas fa-school"></i> Trường THPT Xuyên Mộc</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Thành phố Hồ Chí Minh</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 Savyo - Công cụ hỗ trợ mua sắm thông minh. Đã được bảo hộ bản quyền.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('nav ul');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+            mobileMenuBtn.innerHTML = navMenu.classList.contains('show') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('show');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        // Scroll reveal animation for sections
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe feature cards and benefit cards
+        document.querySelectorAll('.feature-card, .benefit-card, .step').forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(card);
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            if (!anchor.href.includes('savyo.site')) {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if(targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            }
+        });
+        
+        // CTA button pulse animation control
+        const ctaButton = document.querySelector('.cta-button');
+        if (ctaButton) {
+            ctaButton.addEventListener('mouseenter', () => {
+                ctaButton.classList.remove('pulse');
+            });
+            
+            ctaButton.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    ctaButton.classList.add('pulse');
+                }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>
+
